@@ -5,23 +5,28 @@ import { useState } from 'react';
 export const App = () => {
 	const [steps, setSteps] = useState(data);
 	const [activeIndex, setActiveIndex] = useState(0);
-	const [done, setDone] = useState(false);
-	const [active, setActive] = useState(false);
-
-	const handleClick = (event) => {
-		setActive(!active);
-		setActiveIndex(event.target.textContent - 1);
-		// event.target.parentElement.styles += ' ' + styles.active;
-
-	};
+	const [done, setDone] = useState(true);
+	const [active, setActive] = useState(true);
+	const [first, setFirst] = useState(true);
+	const [last, setLast] = useState(false);
 
 	const handleAhead = () => {
 		setActiveIndex(activeIndex + 1);
+		Number(steps[activeIndex].id) === steps.length - 1 &&
+		Number(steps[activeIndex].id) === activeIndex + 1
+			? setLast(true)
+			: setLast(false);
+		setFirst(false);
 	};
 	const handleBack = () => {
 		setActiveIndex(activeIndex - 1);
+		last ? setLast(false) : activeIndex === 1 ? setFirst(true) : setFirst(false);
 	};
-	// И 2 переменных-флага — находимся ли мы на первом шаге, и находимся ли на последнем
+	const handleAgain = () => {
+		setActiveIndex(0);
+		setLast(false);
+		setFirst(true);
+	};
 	return (
 		<div className={styles.container}>
 			<div className={styles.card}>
@@ -31,81 +36,54 @@ export const App = () => {
 						{steps[activeIndex].content}
 					</div>
 					<ul className={styles['steps-list']}>
-						{/* Выводите <li> с помощью массива steps и метода map(), подставляя в разметку нужные значения и классы */}
-						<li
-							className={
-								active
-									? styles['steps-item'] + ' ' + styles.active: styles['steps-item']
-							}
-						>
-							{/* Для того, чтобы вычислить необходимый класс используйте активный индекс, текущий индекс, а также тернарные операторы */}
-							<button
-								onClick={handleClick}
-								className={styles['steps-item-button']}
-							>
-								1
-							</button>
-							{/* При клике на кнопку установка выбранного шага в качестве активного */}
-							{steps[activeIndex].title}
-						</li>
-						<li
-							className={
-								active
-									? styles['steps-item'] + ' ' + styles.active:
-									styles['steps-item']
-							}
-						>
-							<button
-								onClick={handleClick}
-								className={styles['steps-item-button']}
-							>
-								2
-							</button>
-							Шаг 2
-						</li>
-						<li
-							className={
-								active
-									? styles['steps-item'] + ' ' + styles.active
-									: styles['steps-item']
-							}
-						>
-							<button
-								onClick={handleClick}
-								className={styles['steps-item-button']}
-							>
-								3
-							</button>
-							Шаг 3
-						</li>
-						<li
-							className={
-								active
-									? styles['steps-item'] + ' ' + styles.active
-									: styles['steps-item']
-							}
-						>
-							<button
-								onClick={handleClick}
-								className={styles['steps-item-button']}
-							>
-								4
-							</button>
-							Шаг 4
-						</li>
+						{steps.map((it, id) => {
+							return (
+								<li
+									key={String(Date.now()) + String(Math.random())}
+									className={
+										done && id <= activeIndex
+											? active && id === activeIndex
+												? styles['steps-item'] +
+													' ' +
+													styles.done +
+													' ' +
+													styles.active
+												: styles['steps-item'] + ' ' + styles.done
+											: styles['steps-item']
+									}
+								>
+									<button
+										onClick={() => {
+											setDone(true);
+											setActive(true);
+											setActiveIndex(id);
+											id === 0 ? setFirst(true) : setFirst(false);
+											id === steps.length - 1
+												? setLast(true)
+												: setLast(false);
+										}}
+										className={styles['steps-item-button']}
+									>
+										{Number(it.id)}
+									</button>
+									{it.title}
+								</li>
+							);
+						})}
 					</ul>
 					<div className={styles['buttons-container']}>
 						<button
 							onClick={handleBack}
 							className={styles.button}
-							disabled={false}
+							disabled={first}
 						>
 							Назад
 						</button>
-						<button onClick={handleAhead} className={styles.button}>
-							Далее
-							{/* "Начать сначала", можно сделать этой же кнопкой, просто подменять обработчик и текст в зависимости от условия */}
-							{/* Или заменять всю кнопку в зависимости от условия */}
+						<button
+							onClick={last ? handleAgain : handleAhead}
+							className={styles.button}
+						>
+							{last ? 'Начать сначала' : 'Далее'}
 						</button>
 					</div>
 				</div>
