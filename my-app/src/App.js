@@ -12,10 +12,7 @@ export const App = () => {
 
 	const handleAhead = () => {
 		setActiveIndex(activeIndex + 1);
-		Number(steps[activeIndex].id) === steps.length - 1 &&
-		Number(steps[activeIndex].id) === activeIndex + 1
-			? setLast(true)
-			: setLast(false);
+		steps.length - 1 === activeIndex + 1 ? setLast(true) : setLast(false);
 		setFirst(false);
 	};
 	const handleBack = () => {
