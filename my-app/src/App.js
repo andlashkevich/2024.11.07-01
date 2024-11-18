@@ -7,22 +7,17 @@ export const App = () => {
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [done, setDone] = useState(true);
 	const [active, setActive] = useState(true);
-	const [first, setFirst] = useState(true);
-	const [last, setLast] = useState(false);
+	const first = activeIndex === 0;
+	const last = activeIndex === steps.length - 1;
 
 	const handleAhead = () => {
 		setActiveIndex(activeIndex + 1);
-		steps.length - 1 === activeIndex + 1 ? setLast(true) : setLast(false);
-		setFirst(false);
 	};
 	const handleBack = () => {
 		setActiveIndex(activeIndex - 1);
-		last ? setLast(false) : activeIndex === 1 ? setFirst(true) : setFirst(false);
 	};
 	const handleAgain = () => {
 		setActiveIndex(0);
-		setLast(false);
-		setFirst(true);
 	};
 	return (
 		<div className={styles.container}>
@@ -54,10 +49,6 @@ export const App = () => {
 											setDone(true);
 											setActive(true);
 											setActiveIndex(id);
-											id === 0 ? setFirst(true) : setFirst(false);
-											id === steps.length - 1
-												? setLast(true)
-												: setLast(false);
 										}}
 										className={styles['steps-item-button']}
 									>
