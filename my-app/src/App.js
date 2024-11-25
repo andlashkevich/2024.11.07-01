@@ -5,8 +5,6 @@ import { useState } from 'react';
 export const App = () => {
 	const [steps, setSteps] = useState(data);
 	const [activeIndex, setActiveIndex] = useState(0);
-	const [done, setDone] = useState(true);
-	const [active, setActive] = useState(true);
 	const first = activeIndex === 0;
 	const last = activeIndex === steps.length - 1;
 
@@ -31,23 +29,17 @@ export const App = () => {
 						{steps.map((it, id) => {
 							return (
 								<li
-									key={String(Date.now()) + String(Math.random())}
+									key={id}
 									className={
-										done && id <= activeIndex
-											? active && id === activeIndex
-												? styles['steps-item'] +
-													' ' +
-													styles.done +
-													' ' +
-													styles.active
-												: styles['steps-item'] + ' ' + styles.done
-											: styles['steps-item']
+										styles['steps-item'] +
+										' ' +
+										(activeIndex > id ? styles.done : '') +
+										' ' +
+										(activeIndex === id ? styles.active : '')
 									}
 								>
 									<button
 										onClick={() => {
-											setDone(true);
-											setActive(true);
 											setActiveIndex(id);
 										}}
 										className={styles['steps-item-button']}
